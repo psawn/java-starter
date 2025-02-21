@@ -1,23 +1,12 @@
 package com.example.demo.rest;
 
-import com.example.demo.dao.CourseDAO;
-import com.example.demo.dao.InstructorDAO;
-import com.example.demo.dao.InstructorDetailDAO;
-import com.example.demo.dao.StudentDAO;
-import com.example.demo.dto.CourseDTO;
-import com.example.demo.dto.ReviewDTO;
-import com.example.demo.dto.StudentDTO;
+import com.example.demo.dao.*;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
-import com.example.demo.validation.Course.CourseIdsRequest;
-import com.example.demo.validation.Course.CourseRequest;
-import com.example.demo.validation.Course.CreateCourseRequest;
-import com.example.demo.validation.Course.UpdateCourseRequest;
-import com.example.demo.validation.Instructor.CreateInstructorRequest;
-import com.example.demo.validation.Instructor.UpdateInstructorRequest;
-import com.example.demo.validation.Review.CreateReviewRequest;
-import com.example.demo.validation.Review.ReviewRequest;
-import com.example.demo.validation.Student.CreateStudentRequest;
-import com.example.demo.validation.Student.StudentRequest;
+import com.example.demo.validation.Course.*;
+import com.example.demo.validation.Instructor.*;
+import com.example.demo.validation.Review.*;
+import com.example.demo.validation.Student.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -138,12 +127,17 @@ public class InstructorRestController {
 
     @GetMapping("/{instructorId}")
     public Instructor getById(@PathVariable int instructorId) {
-        return instructorDAO.findById(instructorId);
+        Instructor instructor = instructorDAO.findById(instructorId);
+
+        if (instructor == null) {
+            throw new RuntimeException("Instructor id not found - " + instructorId);
+        }
+
+        return instructor;
     }
 
     @GetMapping("/{instructorId}/detail")
     public InstructorDetail getDetailById(@PathVariable int instructorId) {
-        System.out.println("go here");
         Instructor instructor = instructorDAO.findById(instructorId);
 
         if (instructor == null) {
@@ -208,8 +202,8 @@ public class InstructorRestController {
             throw new RuntimeException("Instructor id not found - " + instructorId);
         }
 
-        // Optional.ofNullable(updateInstructorRequest.getFirstName()).ifPresent(value -> instructor.setFirstName(value));
-        // Optional.ofNullable(updateInstructorRequest.getLastName()).ifPresent(value -> instructor.setLastName(value));
+         // Optional.ofNullable(updateInstructorRequest.getFirstName()).ifPresent(value -> instructor.setFirstName(value));
+         // Optional.ofNullable(updateInstructorRequest.getLastName()).ifPresent(value -> instructor.setLastName(value));
 
         Optional.ofNullable(updateInstructorRequest.getFirstName()).ifPresent(instructor::setFirstName);
         Optional.ofNullable(updateInstructorRequest.getLastName()).ifPresent(instructor::setLastName);
